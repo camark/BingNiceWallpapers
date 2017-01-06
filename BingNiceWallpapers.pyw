@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -204,7 +206,7 @@ class BingNiceWallpapers(QSystemTrayIcon):
         if sys.platform.startswith('win'):
             currentWallpaperPath = win32gui.SystemParametersInfo(Action=win32con.SPI_GETDESKWALLPAPER)
         elif sys.platform.startswith('linux'):
-            currentWallpaperPath = subprocess.check_output(["gsettings", 'get', 'org.gnome.desktop.background', 'picture-uri']).decode('utf-8')[8:-2]  # .rstrip('file://')
+            currentWallpaperPath = subprocess.check_output(["gsettings", 'get', 'org.mate.background', 'picture-filename']).decode('utf-8')[8:-2]  # .rstrip('file://')
 
         # print('currentWallpaperPath--------------',currentWallpaperPath,self.likedWallpaperDir)
 
@@ -357,7 +359,11 @@ class BingNiceWallpapers(QSystemTrayIcon):
                     os.remove(imagePath)
 
             elif sys.platform.startswith('linux'):
-                self.process.start("gsettings", ['set', 'org.gnome.desktop.background', 'picture-uri', QUrl.fromLocalFile(imagePath).toString()])
+                #self.process.start("gsettings", ['set', 'org.gnome.desktop.background', 'picture-uri', QUrl.fromLocalFile(imagePath).toString()])
+                img = QUrl.fromLocalFile(imagePath).toString()
+                #print(imagePath)
+                args = ['gsettings', 'set', 'org.mate.background', 'picture-filename', '%s' % imagePath]
+                subprocess.Popen(args)
 
     def checkUpdate(self):
         reply = self.getReply('http://mathjoy.lofter.com/post/42208d_7cabcf7')
